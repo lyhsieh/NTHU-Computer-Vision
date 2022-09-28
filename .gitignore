@@ -1,0 +1,6 @@
+# ignore the files in __pycache__
+__pycache__
+*.pyc
+
+# ignore Microsoft Word file
+*.docx
