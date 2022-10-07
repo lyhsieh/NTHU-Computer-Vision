@@ -5,5 +5,5 @@ __pycache__
 # ignore Microsoft Word file
 *.docx
 
-# idnore .DS_store from mac
+# ignore .DS_store from mac
 .DS_store
