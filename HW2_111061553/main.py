@@ -27,7 +27,7 @@ def estimate_initial_RT(E):
     W = np.zeros((3, 3))
     Z[0][1], Z[1][0] = 1, -1
     W[0][1], W[1][0], W[2][2] = -1, 1, 1
-    U, D, VT = np.linalg.svd(E)
+    U, sigma, VT = np.linalg.svd(E)
     M = np.matmul(np.matmul(U, Z), U.T)
     Q1 = np.matmul(np.matmul(U, W), VT)
     Q2 = np.matmul(np.matmul(U, W.T), VT)
