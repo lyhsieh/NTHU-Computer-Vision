@@ -76,7 +76,7 @@ def linear_estimate_3d_point(image_points, camera_matrices):
     # print(f'VT = {VT}')
     P_temp = VT[-1]
     P_temp /= P_temp[-1]
-    print(f'P_temp = {P_temp}')
+    # print(f'P_temp = {P_temp}')
     return P_temp[:3]
     
 '''
@@ -91,7 +91,22 @@ Returns:
 '''
 def reprojection_error(point_3d, image_points, camera_matrices):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
+    
+    # print(point_3d.shape)
+    # print(image_points.shape)
+    # print(camera_matrices.shape)
+    M = deepcopy(camera_matrices)
+    P = deepcopy(point_3d)
+    P = np.append(P, 1)
+    p = deepcopy(image_points)
+    err = []
+    for i in range(M.shape[0]):
+        yi = np.dot(M[i], P)
+        pi_prime = np.array([yi[0], yi[1]]) / yi[2]
+        ei = pi_prime - p[i]
+        err.extend(list(ei))
+    print(err)
+    return np.array(err)
 
 '''
 JACOBIAN given a 3D point and its corresponding points in the image
