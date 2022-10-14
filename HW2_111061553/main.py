@@ -58,8 +58,26 @@ Returns:
 '''
 def linear_estimate_3d_point(image_points, camera_matrices):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
+    # image_points is p, size = (2, 2)
+    # camera_matrices is M, size = (2, 3, 4)
+    M = deepcopy(camera_matrices)
+    n = M.shape[0]
+    p = deepcopy(image_points)
+    # print(f'M = {M}, shape = {M.shape}')
+    # print(f'p = {p}, shape = {p.shape}')
 
+    mat = np.zeros((n * 2, 4))
+    for i in range(0, n):
+        # print(i * 2, i * 2 + 1)
+        mat[i * 2] = p[i, 1] * M[i, 2] - M[i, 1]
+        mat[i * 2 + 1] = M[i, 0] - p[i, 0] * M[i, 2]
+    # print(f'mat = {mat}')
+    U, sigma, VT = np.linalg.svd(mat)
+    # print(f'VT = {VT}')
+    P_temp = VT[-1]
+    P_temp /= P_temp[-1]
+    return P_temp[:3]
+    
 '''
 REPROJECTION_ERROR given a 3D point and its corresponding points in the image
 planes, compute the reprojection error vector and associated Jacobian
