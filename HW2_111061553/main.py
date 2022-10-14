@@ -76,6 +76,7 @@ def linear_estimate_3d_point(image_points, camera_matrices):
     # print(f'VT = {VT}')
     P_temp = VT[-1]
     P_temp /= P_temp[-1]
+    print(f'P_temp = {P_temp}')
     return P_temp[:3]
     
 '''
