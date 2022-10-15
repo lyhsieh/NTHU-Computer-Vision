@@ -105,7 +105,7 @@ def reprojection_error(point_3d, image_points, camera_matrices):
         pi_prime = np.array([yi[0], yi[1]]) / yi[2]
         ei = pi_prime - p[i]
         err.extend(list(ei))
-    print(err)
+    # print(err)
     return np.array(err)
 
 '''
@@ -119,7 +119,24 @@ Returns:
 '''
 def jacobian(point_3d, camera_matrices):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
+    P = np.append(point_3d, 1)
+    M = deepcopy(camera_matrices)
+    # print(P.shape)
+    # print(M.shape)
+    Jac = np.zeros((2 * M.shape[0], 3))
+    J_row = []
+    for i in range(M.shape[0]):
+        Mi = M[i]
+        yi = np.matmul(Mi, P)
+        # pi_prime = np.array([yi[0], yi[1]]) / yi[2]
+        J_row.append((Mi[0, :3] * yi[2] - Mi[2, :3] * yi[0]) / yi[2] ** 2)
+        J_row.append((Mi[1, :3] * yi[2] - Mi[2, :3] * yi[1]) / yi[2] ** 2)
+
+    # print(J_row)
+    for i in range(M.shape[0] * 2):
+        Jac[i] = J_row[i]
+    
+    return Jac    
 
 '''
 NONLINEAR_ESTIMATE_3D_POINT given a corresponding points in different images,
