@@ -149,8 +149,14 @@ Returns:
 '''
 def nonlinear_estimate_3d_point(image_points, camera_matrices):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
-
+    P = linear_estimate_3d_point(image_points, camera_matrices)
+    for _ in range(10):
+        J = jacobian(point_3d=P, camera_matrices=camera_matrices)
+        e = reprojection_error(point_3d=P, image_points=image_points, \
+            camera_matrices=camera_matrices)
+        P = P - np.matmul(np.matmul(np.linalg.inv(np.matmul(J.T, J)), J.T), e)
+    return P
+    
 '''
 ESTIMATE_RT_FROM_E from the Essential Matrix, we can compute  the relative RT 
 between the two cameras
