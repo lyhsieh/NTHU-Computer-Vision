@@ -158,7 +158,7 @@ def nonlinear_estimate_3d_point(image_points, camera_matrices):
     return P
     
 '''
-ESTIMATE_RT_FROM_E from the Essential Matrix, we can compute  the relative RT 
+ESTIMATE_RT_FROM_E from the Essential Matrix, we can compute the relative RT 
 between the two cameras
 Arguments:
     E - the Essential Matrix between the two cameras
@@ -170,7 +170,36 @@ Returns:
 '''
 def estimate_RT_from_E(E, image_points, K):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
+    init_RT = estimate_initial_RT(E)       # 4 * 3 * 4
+    temp = np.matmul(K, np.hstack((np.eye(3), np.zeros((3,1)))))    # 3 * 4
+    # print(M.shape)
+    camera_matrices = np.array((temp, np.zeros(temp.shape)))
+    # print(camera_matrices.shape)
+    cnt_list = []
+    for i in range(init_RT.shape[0]):
+        camera_matrices[1] = np.matmul(K, init_RT[i])
+        # print(camera_matrices)
+        for j in range(image_points.shape[0]):
+            cnt = 0
+            # print(i, j)
+            nonlinear_pt = nonlinear_estimate_3d_point(image_points[j], \
+                camera_matrices)
+            nonlinear_pt = np.append(nonlinear_pt, 1)
+            # print(nonlinear_pt)
+            # print(np.vstack((init_RT[i], [0, 0, 0, 1])))
+            temp2 = np.vstack((init_RT[i], [0, 0, 0, 1]))
+            # print(np.array((nonlinear_pt[0], nonlinear_pt[1], nonlinear_pt[2], 1)))
+            Pj_prime = np.matmul(temp2, np.array((nonlinear_pt[0], nonlinear_pt[1], nonlinear_pt[2], 1)).T)
+            Pj_prime /= Pj_prime[3]
+            Pj_prime = Pj_prime[:3]
+            # print(f'Pj = {nonlinear_pt}')
+            # print(f'Pj_prime = {Pj_prime}')
+            if nonlinear_pt[2] > 0 and Pj_prime[2] > 0:
+                cnt += 1
+        cnt_list.append(cnt)
+    # print(cnt_list.index(max(cnt_list)))
+    return init_RT[cnt_list.index(max(cnt_list))]
+    
 
 if __name__ == '__main__':
     run_pipeline = True
