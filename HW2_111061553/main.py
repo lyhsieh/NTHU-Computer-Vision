@@ -136,7 +136,7 @@ def jacobian(point_3d, camera_matrices):
     for i in range(M.shape[0] * 2):
         Jac[i] = J_row[i]
     
-    return Jac    
+    return Jac
 
 '''
 NONLINEAR_ESTIMATE_3D_POINT given a corresponding points in different images,

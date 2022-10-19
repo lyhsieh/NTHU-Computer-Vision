@@ -72,6 +72,48 @@
     </div>
 
 * `jacobian()`
+    ```python
+    def jacobian(point_3d, camera_matrices):
+        P = np.append(point_3d, 1)
+        M = deepcopy(camera_matrices)
+        Jac = np.zeros((2 * M.shape[0], 3))
+        J_row = []
+
+        for i in range(M.shape[0]):
+            Mi = M[i]
+            yi = np.matmul(Mi, P)
+            J_row.append((Mi[0, :3] * yi[2] - Mi[2, :3] * yi[0]) / yi[2] ** 2)
+            J_row.append((Mi[1, :3] * yi[2] - Mi[2, :3] * yi[1]) / yi[2] ** 2)
+
+        for i in range(M.shape[0] * 2):
+            Jac[i] = J_row[i]
+        
+        return Jac
+    ```
+    <div align="center">
+
+    $M_i = \begin{bmatrix} a_{00} & a_{01} & a_{02} & a_{03} \\ a_{10} & a_{11} & a_{12} & a_{13}  \\ a_{20} & a_{21} & a_{22} & a_{23} \end{bmatrix}，P = \begin{bmatrix} X \\ Y \\ Z \\ 1 \end{bmatrix}\quad$
+    $y_i = M_iP = \begin{bmatrix} a_{00} & a_{01} & a_{02} & a_{03} \\ a_{10} & a_{11} & a_{12} & a_{13}  \\ a_{20} & a_{21} & a_{22} & a_{23} \end{bmatrix}\times\begin{bmatrix} X \\ Y \\ Z \\ 1 \end{bmatrix} = \begin{bmatrix} a_{00}X + a_{01}Y + a_{02}Z + a_{03} \\ a_{10}X + a_{11}Y + a_{12}Z + a_{13} \\ a_{20}X + a_{21}Y + a_{22}Z + a_{23} \end{bmatrix}\quad$
+
+    $p_i' = \frac{1}{y_{i3}}\begin{bmatrix} y_{i1} \\ y_{i2} \end{bmatrix} = \begin{bmatrix} \frac{a_{00}X + a_{01}Y + a_{02}Z + a_{03}}{a_{20}X + a_{21}Y + a_{22}Z + a_{23}} \\ \\ \frac{a_{10}X + a_{11}Y + a_{12}Z + a_{13}}{a_{20}X + a_{21}Y + a_{22}Z + a_{23}} \end{bmatrix}$
+    
+    $\frac{\partial e_i}{\partial X} = \begin{bmatrix}
+        \frac{a_{00}(a_{20}X + a_{21}Y + a_{22}Z + a_{23}) - a_{20}(a_{00}X + a_{01}Y + a_{02}Z + a_{03})}{(a_{20}X + a_{21}Y + a_{22}Z + a_{23})^2} \\ \\
+        \frac{a_{10}(a_{20}X + a_{21}Y + a_{22}Z + a_{23}) - a_{20}(a_{00}X + a_{01}Y + a_{02}Z + a_{03})}{(a_{20}X + a_{21}Y + a_{22}Z + a_{23})^2} 
+    \end{bmatrix}$
+
+    $\frac{\partial e_i}{\partial Y} = \begin{bmatrix}
+        \frac{a_{01}(a_{20}X + a_{21}Y + a_{22}Z + a_{23}) - a_{21}(a_{00}X + a_{01}Y + a_{02}Z + a_{03})}{(a_{20}X + a_{21}Y + a_{22}Z + a_{23})^2} \\ \\
+        \frac{a_{11}(a_{20}X + a_{21}Y + a_{22}Z + a_{23}) - a_{21}(a_{00}X + a_{01}Y + a_{02}Z + a_{03})}{(a_{20}X + a_{21}Y + a_{22}Z + a_{23})^2} 
+    \end{bmatrix}$
+
+    $\frac{\partial e_i}{\partial Z} = \begin{bmatrix}
+        \frac{a_{02}(a_{20}X + a_{21}Y + a_{22}Z + a_{23}) - a_{22}(a_{00}X + a_{01}Y + a_{02}Z + a_{03})}{(a_{20}X + a_{21}Y + a_{22}Z + a_{23})^2} \\ \\
+        \frac{a_{12}(a_{20}X + a_{21}Y + a_{22}Z + a_{23}) - a_{22}(a_{00}X + a_{01}Y + a_{02}Z + a_{03})}{(a_{20}X + a_{21}Y + a_{22}Z + a_{23})^2} 
+    \end{bmatrix}$
+
+    </div>
+    根據公式$e_i = p_i' - p_i$，因為$p_i$為常數，不影響偏微分的結果，因此考慮$p_i'$對每個變數偏微分的結果，即可得到Jacobian的結果。
 
 * `nonlinear_estimate_3d_point()`
 
