@@ -113,7 +113,7 @@
     \end{bmatrix}$
 
     </div>
-    根據公式$e_i = p_i' - p_i$，因為$p_i$為常數，不影響偏微分的結果，因此考慮$p_i'$對每個變數偏微分的結果，即可得到Jacobian的結果。
+    根據公式$e_i = p_i' - p_i$，因為$p_i$為常數，不影響偏微分的結果，因此考慮$p_i'$對每個變數偏微分的結果，計算結果如上，即可得到Jacobian的結果。
 
 * `nonlinear_estimate_3d_point()`
 
