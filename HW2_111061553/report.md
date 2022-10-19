@@ -43,7 +43,7 @@
         P_temp /= P_temp[-1]
         return P_temp[:3]
     ```
-    先利用$M$和$p$製造出下圖左邊的矩陣，名為`mat`，接著將`mat`做SVD分解得到$U$、$\Sigma$、$V^T$，將$V^T$的最後一個row同除以最後一個row的最後一個數字之後，return前三個數字即為所求。
+    先利用$M$和$p$製造出下方算式左邊的矩陣，名為`mat`，接著將`mat`做SVD分解得到$U$、$\Sigma$、$V^T$，將$V^T$的最後一個row同除以最後一個row的最後一個數字之後，return前三個數字即為所求。
 
     <div align="center">
     <img src="https://imgur.com/krVvCED.png" width=35%>
@@ -65,7 +65,10 @@
             err.extend(list(ei))
         return np.array(err)
     ```
-    根據公式$y = M_iP$計算出每個$y_i$，大小為3 * 1。再根據下圖公式計算出每個$p_i'$，最後計算$p_i'-p_i$得到$e_i$。
+
+    <div STYLE="page-break-after: always;"></div>
+
+    根據公式$y = M_iP$計算出每個$y_i$，大小為3 * 1。再根據下方公式計算出每個$p_i'$，最後計算$p_i'-p_i$得到$e_i$。
     
     <div align="center">
     <img src="https://imgur.com/qFC7Tif.png" width=30%>
@@ -113,12 +116,55 @@
     \end{bmatrix}$
 
     </div>
-    
+
     根據公式$e_i = p_i' - p_i$，因為$p_i$為常數，不影響偏微分的結果，因此考慮$p_i'$對每個變數偏微分的結果，計算結果如上，即可得到Jacobian的結果。
 
 * `nonlinear_estimate_3d_point()`
+    ```python
+    def nonlinear_estimate_3d_point(image_points, camera_matrices):
+        P = linear_estimate_3d_point(image_points, camera_matrices)
+        for _ in range(10):
+            J = jacobian(point_3d=P, camera_matrices=camera_matrices)
+            e = reprojection_error(point_3d=P, image_points=image_points, \
+                camera_matrices=camera_matrices)
+            P = P - np.matmul(np.matmul(np.linalg.inv(np.matmul(J.T, J)), J.T), e)
+        return P
+    ```
+    根據公式$P = P - (J^TJ)^{-1}J^Te$做10次，其中$J$來自`jacobian()`，$e$來自`reprojection_error()`。
 
-1. Decide the Correct RT
+4. Decide the Correct RT
 * `estimate_RT_from_E()`
+    ```python
+    def estimate_RT_from_E(E, image_points, K):
+        init_RT = estimate_initial_RT(E)       # 4 * 3 * 4
+        temp = np.matmul(K, np.hstack((np.eye(3), np.zeros((3,1)))))    # 3 * 4
+        camera_matrices = np.array((temp, np.zeros(temp.shape)))
+        cnt_list = []
+        for i in range(init_RT.shape[0]):
+            camera_matrices[1] = np.matmul(K, init_RT[i])
+            for j in range(image_points.shape[0]):
+                cnt = 0
+                nonlinear_pt = nonlinear_estimate_3d_point(image_points[j], camera_matrices)
+                nonlinear_pt = np.append(nonlinear_pt, 1)
+                temp2 = np.vstack((init_RT[i], [0, 0, 0, 1]))
+                Pj_prime = np.matmul(temp2, np.array((nonlinear_pt[0], nonlinear_pt[1], nonlinear_pt[2], 1)).T)
+                Pj_prime /= Pj_prime[3]
+                Pj_prime = Pj_prime[:3]
+                if nonlinear_pt[2] > 0 and Pj_prime[2] > 0:
+                    cnt += 1
+            cnt_list.append(cnt)
+        return init_RT[cnt_list.index(max(cnt_list))]
+    ```
+    先呼叫`estimate_initial_RT()`，得到四種可能的$RT$，對於每個可能的$RT$，呼叫`nonlinear_estimate_3d_point()`，得到對應的$p_j$，接著利用`RT[i]`對$p_j$做矩陣相乘，轉到另一個camera的座標$p_j'$。
+
+    最後，檢查每一組$p_j$以及$p_j'$的z座標，看哪一組的兩個z座標均為正數，就代表該組數據對應正確的$RT$，最後return正確的$RT$即為所求。
 
 ### Result
+
+<div align="center">
+<img src="https://imgur.com/vpfvj4y.png" width=70%>
+</div>
+
+最終得到的結果如上圖，與pdf中完全相同。
+
+我覺得這次作業比前次複雜許多，但完成之後，我對於相機的translation、rotation等運算更加的了解。
