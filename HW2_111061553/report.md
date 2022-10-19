@@ -51,8 +51,28 @@
 
 3. Non-Linear 3D Points Estimation
 * `reprojection error()`
+    ```python
+    def reprojection_error(point_3d, image_points, camera_matrices):
+        M = deepcopy(camera_matrices)
+        P = deepcopy(point_3d)
+        P = np.append(P, 1)
+        p = deepcopy(image_points)
+        err = []
+        for i in range(M.shape[0]):
+            yi = np.dot(M[i], P)
+            pi_prime = np.array([yi[0], yi[1]]) / yi[2]
+            ei = pi_prime - p[i]
+            err.extend(list(ei))
+        return np.array(err)
+    ```
+    根據公式$y = M_iP$計算出每個$y_i$，大小為3 * 1。再根據下圖公式計算出每個$p_i'$，最後計算$p_i'-p_i$得到$e_i$。
+    
+    <div align="center">
+    <img src="https://imgur.com/qFC7Tif.png" width=30%>
+    </div>
 
 * `jacobian()`
+
 * `nonlinear_estimate_3d_point()`
 
 1. Decide the Correct RT
