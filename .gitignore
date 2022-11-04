@@ -7,3 +7,6 @@ __pycache__
 
 # ignore .DS_store from mac
 .DS_store
+
+# ignore CIFAR 10 dataset
+HW3_111061553/data
