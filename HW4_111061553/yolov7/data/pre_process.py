@@ -37,6 +37,8 @@ def split_train_val_path(all_image_paths, train_val_ratio=0.9):
         val_image_paths = ['your_folder/images3.jpg', 'your_folder/images4.jpg', ...]
     """
     # TODO : split train and val
+    random.shuffle(all_image_paths)
+    # print(all_image_paths)
     train_image_paths = all_image_paths[: int(len(all_image_paths) * train_val_ratio)]  # just an example
     val_image_paths = all_image_paths[int(len(all_image_paths) * train_val_ratio):]  # just an example
 
