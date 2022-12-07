@@ -108,36 +108,36 @@ def select_imaegs(image_paths, images_num=200):
     # ###########################################
 
     ###### select most types with avg ######
-    img170 = list(filter(lambda s: '170/170' in s, image_paths))
-    img495 = list(filter(lambda s: '495/495' in s, image_paths))
-    img410 = list(filter(lambda s: '410/410' in s, image_paths))
-    img511 = list(filter(lambda s: '511/511' in s, image_paths))
-    img398 = list(filter(lambda s: '398/398' in s, image_paths))
-    img173 = list(filter(lambda s: '173/173' in s, image_paths))
+    # img170 = list(filter(lambda s: '170/170' in s, image_paths))
+    # img495 = list(filter(lambda s: '495/495' in s, image_paths))
+    # img410 = list(filter(lambda s: '410/410' in s, image_paths))
+    # img511 = list(filter(lambda s: '511/511' in s, image_paths))
+    # img398 = list(filter(lambda s: '398/398' in s, image_paths))
+    # img173 = list(filter(lambda s: '173/173' in s, image_paths))
 
-    freq = {}
-    for image in image_paths:
-        gt = image[:-3] + 'txt'
-        with open(gt, 'r') as fh:
-            L = fh.readlines()
-            # print(len(L))
-            freq[image] = len(set([tmp.split(' ')[0] for tmp in L]))
+    # freq = {}
+    # for image in image_paths:
+    #     gt = image[:-3] + 'txt'
+    #     with open(gt, 'r') as fh:
+    #         L = fh.readlines()
+    #         # print(len(L))
+    #         freq[image] = len(set([tmp.split(' ')[0] for tmp in L]))
     
-    img170.sort(key=lambda f: freq[f], reverse=True)
-    img495.sort(key=lambda f: freq[f], reverse=True)
-    img410.sort(key=lambda f: freq[f], reverse=True)
-    img511.sort(key=lambda f: freq[f], reverse=True)
-    img398.sort(key=lambda f: freq[f], reverse=True)
-    img173.sort(key=lambda f: freq[f], reverse=True)
+    # img170.sort(key=lambda f: freq[f], reverse=True)
+    # img495.sort(key=lambda f: freq[f], reverse=True)
+    # img410.sort(key=lambda f: freq[f], reverse=True)
+    # img511.sort(key=lambda f: freq[f], reverse=True)
+    # img398.sort(key=lambda f: freq[f], reverse=True)
+    # img173.sort(key=lambda f: freq[f], reverse=True)
     
-    selected_image_paths = img170[:33] + img495[:33] + img410[:34]\
-                         + img511[:33] + img398[:33] + img173[:34]
+    # selected_image_paths = img170[:33] + img495[:33] + img410[:34]\
+    #                      + img511[:33] + img398[:33] + img173[:34]
     ##########################################
 
-    for f in selected_image_paths:
-        print(f, freq[f])
-    print(len(selected_image_paths))
-
+    # for f in selected_image_paths:
+    #     print(f, freq[f])
+    # print(len(selected_image_paths))
+    raise NotImplementedError
     return selected_image_paths
 
 # TODO : split train and val images
