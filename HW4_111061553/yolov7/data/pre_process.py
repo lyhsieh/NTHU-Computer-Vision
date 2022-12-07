@@ -137,7 +137,7 @@ def select_imaegs(image_paths, images_num=200):
     # for f in selected_image_paths:
     #     print(f, freq[f])
     # print(len(selected_image_paths))
-    raise NotImplementedError
+    
     return selected_image_paths
 
 # TODO : split train and val images
