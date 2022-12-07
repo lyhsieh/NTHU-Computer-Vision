@@ -59,7 +59,7 @@ def select_imaegs(image_paths, images_num=200):
     #         L = fh.readlines()
     #         # print(len(L))
     #         freq[image] = len(L)
-    # print(freq)
+    # # print(freq)
     # image_paths.sort(key=lambda f: freq[f], reverse=True)
     # # print(image_paths)
     # selected_image_paths = image_paths[:200]
@@ -136,8 +136,13 @@ def select_imaegs(image_paths, images_num=200):
 
     # for f in selected_image_paths:
     #     print(f, freq[f])
-    # print(len(selected_image_paths))
-    
+
+    ###### only train with pseudo label images ######
+    # selected_image_paths = image_paths
+    with open('/home/leo/CV/HW4_111061553/yolov7/data/fuck.txt', 'r') as fh:
+        selected_image_paths = image_paths + [tmp[:-1] for tmp in fh.readlines()]
+    print(len(selected_image_paths))
+    print(selected_image_paths)
     return selected_image_paths
 
 # TODO : split train and val images
