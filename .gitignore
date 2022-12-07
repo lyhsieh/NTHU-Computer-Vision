@@ -9,4 +9,14 @@ __pycache__
 .DS_store
 
 # ignore CIFAR 10 dataset
-data
+HW3_111061553/exp/*/data
+
+## CityCam dataset
+HW4_111061553/yolov7/data/CityCam/Q1
+HW4_111061553/yolov7/data/CityCam/Q2
+HW4_111061553/yolov7/data/CityCam/Q3
+HW4_111061553/yolov7/data/CityCam/test
+HW4_111061553/yolov7/runs
+*.cache
+*.pt
+CV.zip
